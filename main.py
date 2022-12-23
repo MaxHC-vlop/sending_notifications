@@ -1,11 +1,28 @@
 import logging
 
 import requests
+import telegram
 
 from environs import Env
 
 
 DEVMAN_URL = 'https://dvmn.org/api/long_polling/'
+
+
+def get_job_review_status(devman_token, timestamp):
+    headers = {
+        'Authorization': f'Token {devman_token}'
+    }
+    payload = {
+        'timestamp': timestamp
+    }
+
+    response = requests.get(DEVMAN_URL, headers=headers, params=payload)
+    response.raise_for_status()
+
+    response_content = response.json()
+
+    return response_content
 
 
 def main():
@@ -15,31 +32,28 @@ def main():
     env = Env()
     env.read_env()
     devman_token = env.str('DEVMAN_TOKEN')
+    telegram_token = env.str('TELEGRAM_TOKEN')
 
-    headers = {
-        'Authorization': f'Token {devman_token}'
-    }
-    timestamp = None
+    bot = telegram.Bot(telegram_token)
 
-    while True:
-        try:
-            payload = {
-                'timestamp': timestamp
-            }
-            response = requests.get(DEVMAN_URL, headers=headers, params=payload)
-            response.raise_for_status()
+    updates = bot.get_updates()
+    bot.send_message(text='Hi Vlad!', chat_id=533208511)
 
-            response_content = response.json()
+    # timestamp = None
 
-            timestamp = response_content['timestamp_to_request']
+    # while True:
+    #     try:
+    #         response_content = get_job_review_status(DEVMAN_URL, devman_token, timestamp)
 
-        except requests.exceptions.ReadTimeout as error:
-            logger.error(f'Timeout: {error}')
-            continue
+    #         timestamp = response_content['timestamp_to_request']
 
-        except requests.exceptions.ConnectionError as error:
-            logger.error(f'ConnectionError: {error}')
-            continue
+    #     except requests.exceptions.ReadTimeout as error:
+    #         logger.error(f'Timeout: {error}')
+    #         continue
+
+    #     except requests.exceptions.ConnectionError as error:
+    #         logger.error(f'ConnectionError: {error}')
+    #         continue
 
 
 if __name__ == '__main__':
