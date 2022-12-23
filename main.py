@@ -25,8 +25,14 @@ def main():
             response.raise_for_status()
 
             print(response.json())
+
         except requests.exceptions.ReadTimeout as error:
             logger.error(f'Timeout: {error}')
+            continue
+
+        except requests.exceptions.ConnectionError as error:
+            logger.error(f'ConnectionError: {error}')
+            continue
 
 
 if __name__ == '__main__':
