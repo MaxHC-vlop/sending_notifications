@@ -16,15 +16,22 @@ def main():
     env.read_env()
     devman_token = env.str('DEVMAN_TOKEN')
 
-    headers = {'Authorization': f'Token {devman_token}'}
-    payload = {'timestamp': 100}
+    headers = {
+        'Authorization': f'Token {devman_token}'
+    }
+    timestamp = None
 
     while True:
         try:
-            response = requests.get(DEVMAN_URL, headers=headers)
+            payload = {
+                'timestamp': timestamp
+            }
+            response = requests.get(DEVMAN_URL, headers=headers, params=payload)
             response.raise_for_status()
 
-            print(response.json())
+            response_content = response.json()
+
+            timestamp = response_content['timestamp_to_request']
 
         except requests.exceptions.ReadTimeout as error:
             logger.error(f'Timeout: {error}')
