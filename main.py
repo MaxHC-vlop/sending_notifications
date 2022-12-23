@@ -1,3 +1,5 @@
+import time
+
 import requests
 
 from environs import Env
@@ -12,12 +14,13 @@ def main():
     devman_token = env.str('DEVMAN_TOKEN')
 
     headers = {'Authorization': f'Token {devman_token}'}
-    payload = {'timestamp': 90}
+    payload = {'timestamp': 100}
 
-    response = requests.get(DEVMAN_URL, headers=headers, params=payload, timeout=200)
-    response.raise_for_status()
+    while True:
+        response = requests.get(DEVMAN_URL, headers=headers)
+        response.raise_for_status()
     
-    print(response.json())
+        print(response.json())
 
 
 if __name__ == '__main__':
