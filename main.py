@@ -68,11 +68,11 @@ def main():
 
             if review_content['status'] == 'found':
                 attempts = review_content['new_attempts']
+                timestamp = attempts['last_attempt_timestamp']
 
                 for attempt in attempts:
                     message = make_message(attempt)
                     bot.send_message(text=message, chat_id=chat_id)
-                    timestamp = attempt['timestamp']
 
             else:
                 timestamp = review_content['timestamp_to_request']
