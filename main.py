@@ -12,23 +12,6 @@ DEVMAN_URL = 'https://dvmn.org/api/long_polling/'
 SLEEP_TIME = 10
 
 
-def get_job_review_status(url, devman_token, timestamp):
-    headers = {
-        'Authorization': f'Token {devman_token}'
-    }
-    payload = {
-        'timestamp': timestamp
-    }
-
-    response = requests.get(url, headers=headers, params=payload)
-    response.raise_for_status()
-
-    response_content = response.json()
-
-    return response_content
-
-
-
 def make_message(attempt):
     timestamp = attempt['timestamp']
     lesson_title = attempt['lesson_title']
@@ -66,7 +49,17 @@ def main():
 
     while True:
         try:
-            response_content = get_job_review_status(DEVMAN_URL, devman_token, timestamp)
+            headers = {
+                'Authorization': f'Token {devman_token}'
+            }
+            payload = {
+                'timestamp': timestamp
+            }
+
+            response = requests.get(DEVMAN_URL, headers=headers, params=payload)
+            response.raise_for_status()
+
+            response_content = response.json()
 
             response_status = 'found'
             response_flag = response_content['status'] == response_status
