@@ -58,7 +58,7 @@ def main():
     env.read_env()
     devman_token = env.str('DEVMAN_TOKEN')
     telegram_token = env.str('TELEGRAM_TOKEN')
-    chat_id = env.str('CHAT_ID')
+    chat_id = env.str('TELEGRAM_CHAT_ID')
 
     bot = telegram.Bot(telegram_token)
 
