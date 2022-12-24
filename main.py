@@ -36,8 +36,6 @@ def main():
 
     bot = telegram.Bot(telegram_token)
 
-    updates = bot.get_updates()
-
     timestamp = None
 
     while True:
@@ -46,14 +44,26 @@ def main():
 
             response_status = 'found'
             flag = response_content['status'] == response_status
-            print(response_content)
 
             if flag:
                 new_attempts = response_content['new_attempts'][0]
 
                 timestamp = new_attempts['timestamp']
+                lesson_title = new_attempts['lesson_title']
+                lesson_url = new_attempts['lesson_url']
 
-                message = 'Преподаватель проверил работу!'
+                flag = new_attempts['is_negative']
+
+                end_message = 'Преподавателю всё понравилось, можно приступать к следущему уроку!'
+                if flag:
+                    end_message = 'К сожалению, в работе нашлись ошибки.'
+                
+                message = (
+                    f'У Вас проверили работу «{lesson_title}»\n'
+                    f'{end_message}\n'
+                    f'Ваша работа: {lesson_url}'
+                )
+
                 bot.send_message(text=message, chat_id=533208511)
             else:
                 timestamp = response_content['timestamp_to_request']
