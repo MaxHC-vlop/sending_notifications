@@ -1,6 +1,8 @@
 import logging
 import time
 
+from textwrap import dedent
+
 import requests
 import telegram
 
@@ -24,11 +26,13 @@ def make_message(attempt):
     if review_flag:
         end_message = 'К сожалению, в работе нашлись ошибки.'
     
-    message = (
-        f'У Вас проверили работу «{lesson_title}»\n'
-        f'{end_message}\n'
-        f'Ваша работа: {lesson_url}'
-    )
+    message = f'''\
+        У Вас проверили работу «{lesson_title}».
+        {end_message}
+        Ваша работа: {lesson_url}
+    '''
+
+    message = dedent(message)
 
     return message
 
