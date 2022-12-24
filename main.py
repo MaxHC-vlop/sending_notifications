@@ -33,6 +33,7 @@ def main():
     env.read_env()
     devman_token = env.str('DEVMAN_TOKEN')
     telegram_token = env.str('TELEGRAM_TOKEN')
+    chat_id = env.str('CHAT_ID')
 
     bot = telegram.Bot(telegram_token)
 
@@ -64,7 +65,7 @@ def main():
                     f'Ваша работа: {lesson_url}'
                 )
 
-                bot.send_message(text=message, chat_id=533208511)
+                bot.send_message(text=message, chat_id=chat_id)
             else:
                 timestamp = response_content['timestamp_to_request']
         
