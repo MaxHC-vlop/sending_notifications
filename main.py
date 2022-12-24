@@ -65,17 +65,14 @@ def main():
 
             api_response = response.json()
 
-            response_status = 'found'
-            response_flag = api_response['status'] == response_status
-
-            if response_flag:
+            if api_response['status'] == 'found':
                 attempts = api_response['new_attempts']
 
                 for attempt in attempts:
                     message = make_message(attempt)
                     bot.send_message(text=message, chat_id=chat_id)
 
-            if not response_flag:
+            else:
                 timestamp = api_response['timestamp_to_request']
         
         except requests.exceptions.ReadTimeout as error:
