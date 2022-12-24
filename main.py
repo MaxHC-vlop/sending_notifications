@@ -15,7 +15,6 @@ SLEEP_TIME = 10
 
 
 def make_message(attempt):
-    timestamp = attempt['timestamp']
     lesson_title = attempt['lesson_title']
     lesson_url = attempt['lesson_url']
 
@@ -71,6 +70,7 @@ def main():
                 for attempt in attempts:
                     message = make_message(attempt)
                     bot.send_message(text=message, chat_id=chat_id)
+                    timestamp = attempt['timestamp']
 
             else:
                 timestamp = api_response['timestamp_to_request']
