@@ -64,10 +64,10 @@ def main():
             response = requests.get(DEVMAN_URL, headers=headers, params=payload)
             response.raise_for_status()
 
-            api_response = response.json()
+            review_content = response.json()
 
-            if api_response['status'] == 'found':
-                attempts = api_response['new_attempts']
+            if review_content['status'] == 'found':
+                attempts = review_content['new_attempts']
 
                 for attempt in attempts:
                     message = make_message(attempt)
@@ -75,7 +75,7 @@ def main():
                     timestamp = attempt['timestamp']
 
             else:
-                timestamp = api_response['timestamp_to_request']
+                timestamp = review_content['timestamp_to_request']
         
         except requests.exceptions.ReadTimeout as error:
             logger.error(f'Timeout: {error}')
