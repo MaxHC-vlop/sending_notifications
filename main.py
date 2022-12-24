@@ -1,4 +1,5 @@
 import logging
+import time
 
 import requests
 import telegram
@@ -7,6 +8,8 @@ from environs import Env
 
 
 DEVMAN_URL = 'https://dvmn.org/api/long_polling/'
+
+SLEEP_TIME = 10
 
 
 def get_job_review_status(url, devman_token, timestamp):
@@ -23,6 +26,28 @@ def get_job_review_status(url, devman_token, timestamp):
     response_content = response.json()
 
     return response_content
+
+
+
+def make_message(attempt):
+    timestamp = attempt['timestamp']
+    lesson_title = attempt['lesson_title']
+    lesson_url = attempt['lesson_url']
+
+    review_flag = attempt['is_negative']
+
+    end_message = 'Преподавателю всё понравилось, можно приступать к следущему уроку!'
+
+    if review_flag:
+        end_message = 'К сожалению, в работе нашлись ошибки.'
+    
+    message = (
+        f'У Вас проверили работу «{lesson_title}»\n'
+        f'{end_message}\n'
+        f'Ваша работа: {lesson_url}'
+    )
+
+    return message
 
 
 def main():
@@ -44,29 +69,16 @@ def main():
             response_content = get_job_review_status(DEVMAN_URL, devman_token, timestamp)
 
             response_status = 'found'
-            flag = response_content['status'] == response_status
+            response_flag = response_content['status'] == response_status
 
-            if flag:
-                new_attempts = response_content['new_attempts'][0]
+            if response_flag:
+                attempts = response_content['new_attempts']
 
-                timestamp = new_attempts['timestamp']
-                lesson_title = new_attempts['lesson_title']
-                lesson_url = new_attempts['lesson_url']
+                for attempt in attempts:
+                    message = make_message(attempt)
+                    bot.send_message(text=message, chat_id=chat_id)
 
-                flag = new_attempts['is_negative']
-
-                end_message = 'Преподавателю всё понравилось, можно приступать к следущему уроку!'
-                if flag:
-                    end_message = 'К сожалению, в работе нашлись ошибки.'
-                
-                message = (
-                    f'У Вас проверили работу «{lesson_title}»\n'
-                    f'{end_message}\n'
-                    f'Ваша работа: {lesson_url}'
-                )
-
-                bot.send_message(text=message, chat_id=chat_id)
-            else:
+            if not response_flag:
                 timestamp = response_content['timestamp_to_request']
         
         except requests.exceptions.ReadTimeout as error:
@@ -75,6 +87,16 @@ def main():
 
         except requests.exceptions.ConnectionError as error:
             logger.error(f'ConnectionError: {error}')
+            time.sleep(SLEEP_TIME)
+            continue
+
+        except requests.exceptions.HTTPError as error:
+            logger.error(f'HTTPError: {error}')
+            continue
+
+        except telegram.error.NetworkError as error:
+            logger.error(f'telegram.NetworkError: {error}')
+            time.sleep(SLEEP_TIME)
             continue
 
 
