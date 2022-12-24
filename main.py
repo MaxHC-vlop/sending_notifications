@@ -13,6 +13,8 @@ DEVMAN_URL = 'https://dvmn.org/api/long_polling/'
 
 SLEEP_TIME = 10
 
+logger = logging.getLogger(__file__)
+
 
 def make_message(attempt):
     lesson_title = attempt['lesson_title']
@@ -37,8 +39,8 @@ def make_message(attempt):
 
 
 def main():
-    logger = logging.getLogger(__file__)
     logging.basicConfig(level=logging.ERROR)
+    logger.setLevel(logging.DEBUG)
 
     env = Env()
     env.read_env()
