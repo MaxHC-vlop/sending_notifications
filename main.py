@@ -9,7 +9,7 @@ from environs import Env
 DEVMAN_URL = 'https://dvmn.org/api/long_polling/'
 
 
-def get_job_review_status(devman_token, timestamp):
+def get_job_review_status(url, devman_token, timestamp):
     headers = {
         'Authorization': f'Token {devman_token}'
     }
@@ -17,7 +17,7 @@ def get_job_review_status(devman_token, timestamp):
         'timestamp': timestamp
     }
 
-    response = requests.get(DEVMAN_URL, headers=headers, params=payload)
+    response = requests.get(url, headers=headers, params=payload)
     response.raise_for_status()
 
     response_content = response.json()
@@ -37,23 +37,34 @@ def main():
     bot = telegram.Bot(telegram_token)
 
     updates = bot.get_updates()
-    bot.send_message(text='Hi Vlad!', chat_id=533208511)
 
-    # timestamp = None
+    timestamp = None
 
-    # while True:
-    #     try:
-    #         response_content = get_job_review_status(DEVMAN_URL, devman_token, timestamp)
+    while True:
+        try:
+            response_content = get_job_review_status(DEVMAN_URL, devman_token, timestamp)
 
-    #         timestamp = response_content['timestamp_to_request']
+            response_status = 'found'
+            flag = response_content['status'] == response_status
+            print(response_content)
 
-    #     except requests.exceptions.ReadTimeout as error:
-    #         logger.error(f'Timeout: {error}')
-    #         continue
+            if flag:
+                new_attempts = response_content['new_attempts'][0]
 
-    #     except requests.exceptions.ConnectionError as error:
-    #         logger.error(f'ConnectionError: {error}')
-    #         continue
+                timestamp = new_attempts['timestamp']
+
+                message = 'Преподаватель проверил работу!'
+                bot.send_message(text=message, chat_id=533208511)
+            else:
+                timestamp = response_content['timestamp_to_request']
+        
+        except requests.exceptions.ReadTimeout as error:
+            logger.error(f'Timeout: {error}')
+            continue
+
+        except requests.exceptions.ConnectionError as error:
+            logger.error(f'ConnectionError: {error}')
+            continue
 
 
 if __name__ == '__main__':
