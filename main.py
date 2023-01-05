@@ -68,7 +68,7 @@ def main():
 
             if review_content['status'] == 'found':
                 attempts = review_content['new_attempts']
-                timestamp = attempts['last_attempt_timestamp']
+                timestamp = review_content['last_attempt_timestamp']
 
                 for attempt in attempts:
                     message = make_message(attempt)
