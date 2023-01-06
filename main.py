@@ -16,6 +16,17 @@ SLEEP_TIME = 10
 logger = logging.getLogger(__file__)
 
 
+class TelegramLogsHandler(logging.Handler):
+    def __init__(self, tg_bot, chat_id):
+        super().__init__()
+        self.chat_id = chat_id
+        self.tg_bot = tg_bot
+
+    def emit(self, record):
+        log_entry = self.format(record)
+        self.tg_bot.send_message(chat_id=self.chat_id, text=log_entry)
+
+
 def make_message(attempt):
     lesson_title = attempt['lesson_title']
     lesson_url = attempt['lesson_url']
@@ -39,21 +50,27 @@ def make_message(attempt):
 
 
 def main():
-    logging.basicConfig(level=logging.ERROR)
-    logger.setLevel(logging.DEBUG)
+    logging.basicConfig(
+        level=logging.DEBUG,
+    )
 
     env = Env()
     env.read_env()
     devman_token = env.str('DEVMAN_TOKEN')
     telegram_token = env.str('TELEGRAM_TOKEN')
+    logger_bot_token = env.str('LOGGER_BOT_TOKEN')
     chat_id = env.str('TELEGRAM_CHAT_ID')
 
     bot = telegram.Bot(telegram_token)
+    logger_bot = telegram.Bot(logger_bot_token)
+    logger.addHandler(TelegramLogsHandler(logger_bot, chat_id))
+    logger.info('Бот запущен')
 
     timestamp = None
 
     while True:
         try:
+            x = 1 / 0
             headers = {
                 'Authorization': f'Token {devman_token}'
             }
@@ -94,6 +111,12 @@ def main():
             logger.error(f'telegram.NetworkError: {error}')
             time.sleep(SLEEP_TIME)
             continue
+
+        except Exception as error:
+            logger.info('Бот упал с ошибкой:')
+            logger.exception(error)
+
+            break
 
 
 if __name__ == '__main__':
