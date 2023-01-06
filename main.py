@@ -52,6 +52,7 @@ def make_message(attempt):
 def main():
     logging.basicConfig(
         level=logging.DEBUG,
+        format="%(asctime)s %(process)d %(levelname)s %(message)s"
     )
 
     env = Env()
@@ -70,7 +71,6 @@ def main():
 
     while True:
         try:
-            x = 1 / 0
             headers = {
                 'Authorization': f'Token {devman_token}'
             }
@@ -115,8 +115,6 @@ def main():
         except Exception as error:
             logger.info('Бот упал с ошибкой:')
             logger.exception(error)
-
-            break
 
 
 if __name__ == '__main__':
