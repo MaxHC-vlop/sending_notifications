@@ -37,7 +37,7 @@ def make_message(attempt):
 
     if review_flag:
         end_message = 'К сожалению, в работе нашлись ошибки.'
-    
+
     message = f'''\
         У Вас проверили работу «{lesson_title}».
         {end_message}
@@ -78,7 +78,9 @@ def main():
                 'timestamp': timestamp
             }
 
-            response = requests.get(DEVMAN_URL, headers=headers, params=payload)
+            response = requests.get(
+                DEVMAN_URL, headers=headers, params=payload
+            )
             response.raise_for_status()
 
             review_content = response.json()
@@ -93,7 +95,7 @@ def main():
 
             else:
                 timestamp = review_content['timestamp_to_request']
-        
+
         except requests.exceptions.ReadTimeout as error:
             logger.error(f'Timeout: {error}')
             continue
