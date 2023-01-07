@@ -30,6 +30,8 @@ DEVMAN_TOKEN='super_secret'
 TELEGRAM_TOKEN='super_secret'
 
 TELEGRAM_CHAT_ID='your_chat_id'
+
+LOGGER_BOT_TOKEN='super_secret'
 ```
 
 ## Run
