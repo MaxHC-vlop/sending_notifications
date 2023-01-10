@@ -86,4 +86,27 @@ ps -aux | grep main.py
 
 ## Deploy with Docker
 
-- Docker must be installed on the system. 
+- Docker must be installed on the system. Help [here](https://docs.docker.com/engine/install/).
+
+- Go to project :
+```bash
+cd sending_notifications/
+```
+- Collect the image:
+```
+sudo docker build -t bot .
+```
+
+- Run container:
+```
+sudo docker run --restart=always -d bot
+```
+
+- Check if container exists:
+```bash
+sudo docker ps
+# You will see
+
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS     NAMES
+1234567890     bot       "/bin/sh -c 'python3…"   11 minutes ago   Up 10 minutes             name
+```
