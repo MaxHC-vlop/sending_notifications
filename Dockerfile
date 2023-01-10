@@ -1,6 +1,6 @@
 FROM python:3.9-alpine
 
-RUN adduser —disabled-password bot-user
+RUN adduser --disabled-password bot-user
 
 USER bot-user
 
