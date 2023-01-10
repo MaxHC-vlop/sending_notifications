@@ -7,9 +7,6 @@ USER bot-user
 WORKDIR /home/devman_bot
 
 COPY requirements.txt home/devman_bot/requirements.txt
-
-RUN pip install -r home/devman_bot/requirements.txt
-
 COPY .env home/devman_bot/.env
 COPY main.py home/devman_bot/main.py
 

@@ -42,3 +42,48 @@ python3 main.py
 
 - When checking the work, the bot sends you the following message:
 ![screen](/pictures/screen.PNG)
+
+## Deploy with ubuntu
+
+- Let's create a bot.service file in the /etc/systemd/system directory:
+```bash
+sudo touch /etc/systemd/system/devman_bot.service
+```
+
+- Edit devman_bot.service file:
+```bash
+sudo nano /etc/systemd/system/devman_bot.service
+```
+
+- Fill it with the following content:
+```bash
+[Service]
+ExecStart='path_to_interpreter' 'path_to_executable_file'
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+- Execute commands:
+```bash
+# daemons reload
+sudo systemctl daemon-reload
+
+# enable daemon devman_bot
+sudo systemctl enable devman_bot
+
+# start daemon devman_bot
+sudo systemctl start devman_bot
+
+# check status
+sudo systemctl status devman_bot
+
+# check process status
+# grep + executable file
+ps -aux | grep main.py
+```
+
+## Deploy with Docker
+
+- Docker must be installed on the system. 
