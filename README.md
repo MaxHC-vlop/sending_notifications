@@ -99,7 +99,7 @@ sudo docker build -t bot .
 
 - Run container:
 ```
-sudo docker run --restart=always -d bot
+sudo docker run --restart=always -d --env-file .env bot
 ```
 
 - Check if container exists:
