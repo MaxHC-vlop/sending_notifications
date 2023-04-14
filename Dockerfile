@@ -7,6 +7,6 @@ ENV PIP_ROOT_USER_ACTION=ignore
 COPY requirements.txt /opt/app/requirements.txt
 WORKDIR /opt/app
 RUN pip install --upgrade pip && pip install -r requirements.txt
-COPY main.py
+COPY . /opt/app
 
 CMD ["python3", "main.py"]
