@@ -9,4 +9,4 @@ WORKDIR /opt/app
 RUN pip install --upgrade pip && pip install -r requirements.txt
 COPY . /opt/app
 
-CMD ["python3", "main.py"]
+CMD python3.9 /opt/app/main.py
