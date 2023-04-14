@@ -1,0 +1,6 @@
+venv
+LICENSE
+.env
+.gitignore
+README.md
+*/pictures

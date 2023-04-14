@@ -1,15 +1,11 @@
 FROM python:3.9-alpine
 
-RUN adduser --disabled-password bot-user
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-USER bot-user
+COPY requirements.txt /opt/app/requirements.txt
+WORKDIR /opt/app
+RUN pip install --upgrade pip && pip install -r requirements.txt
+COPY . /opt/app
 
-WORKDIR /home/devman_bot
-
-COPY requirements.txt home/devman_bot/requirements.txt
-COPY .env home/devman_bot/.env
-COPY main.py home/devman_bot/main.py
-
-RUN pip install -r home/devman_bot/requirements.txt
-
-CMD python3.9 home/devman_bot/main.py
+CMD ["python3.9", "main.py"]
